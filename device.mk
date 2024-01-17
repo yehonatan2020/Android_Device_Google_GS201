@@ -16,6 +16,15 @@
 
 include device/google/gs-common/device.mk
 
+# Define some properties for GMS
+$(call inherit-product-if-exists, vendor/gms/products/gms.mk)
+# Anything including updatable_apex.mk should have done so by now.
+ifeq ($(TARGET_FLATTEN_APEX), false)
+$(call inherit-product-if-exists, vendor/partner_modules/build/mainline_modules.mk)
+else
+$(call inherit-product-if-exists, vendor/partner_modules/build/mainline_modules_flatten_apex.mk)
+endif
+
 TARGET_BOARD_PLATFORM := gs201
 
 AB_OTA_POSTINSTALL_CONFIG += \

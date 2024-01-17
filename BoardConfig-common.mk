@@ -27,15 +27,6 @@ TARGET_SUPPORTS_QUICK_TAP := true
 TARGET_USES_BLUR := true
 TARGET_ENABLE_BLUR := true
 
-# Define some properties for GMS
-$(call inherit-product-if-exists, vendor/gms/products/gms.mk)
-# Anything including updatable_apex.mk should have done so by now.
-ifeq ($(TARGET_FLATTEN_APEX), false)
-$(call inherit-product-if-exists, vendor/partner_modules/build/mainline_modules.mk)
-else
-$(call inherit-product-if-exists, vendor/partner_modules/build/mainline_modules_flatten_apex.mk)
-endif
-
 # HACK : To fix up after bring up multimedia devices.
 TARGET_SOC := gs201
 
