@@ -21,7 +21,7 @@ TARGET_BOARD_PLATFORM := gs201
 AB_OTA_POSTINSTALL_CONFIG += \
 	RUN_POSTINSTALL_system=true \
 	POSTINSTALL_PATH_system=system/bin/otapreopt_script \
-	FILESYSTEM_TYPE_system=erofs \
+	FILESYSTEM_TYPE_system=ext4 \
 POSTINSTALL_OPTIONAL_system=true
 
 # Set Vendor SPL to match platform
@@ -759,7 +759,63 @@ PRODUCT_PROPERTY_OVERRIDES += \
        debug.c2.use_dmabufheaps=1 \
        media.c2.dmabuf.padding=512 \
        debug.stagefright.ccodec_delayed_params=1 \
-       ro.vendor.gpu.dataspace=1
+       ro.vendor.gpu.dataspace=1 \
+	   camera.disable_zsl_mode=0 \
+	   persist.camera.HAL3.enabled=1 \
+	   persist.camera.ois.disable=0
+
+# Use 2-button navbar by default
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.boot.vendor.overlay.theme=com.android.internal.systemui.navbar.twobutton
+
+# NavigationBarMode
+PRODUCT_PACKAGES += \
+    NavigationBarMode2ButtonOverlay \
+    ImmersiveNavigationOverlay
+
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+    config.stats=0 \
+    dalvik.vm.checkjini=false \
+    dalvik.vm.debug.alloc=0 \
+    debugtool.anrhistory=0 \
+    debug.atrace.tags.enableflags=0 \
+    debug.mdpcomp.logs=0 \
+    debug.systemui.latency_tracking=0 \
+    keyguard.no_require_sim=true \
+    logd.statistics=0 \
+    media.metrics=0 \
+    media.metrics.enabled=0 \
+    persist.sample.eyetracking.log=0 \
+    persist.service.lgospd.enable=0 \
+    persist.service.pcsync.enable=0 \
+    persist.sys.disable_rescue=true \
+    persist.sys.loglevel=0 \
+    pm.sleep_mode=1 \
+    profiler.debugmonitor=false \
+    profiler.force_disable_ulog=true \
+    profiler.force_disable_err_rpt=true \
+    profiler.hung.dumpdobugreport=false \
+    profiler.launch=false \
+    ro.atrace.core.services=com.google.android.gms,com.google.android.gms.ui,com.google.android.gms.persistent \
+    ro.build.selinux=1 \
+    ro.com.android.dateformat=MM-dd-yyyy \
+    ro.com.android.dataroaming=false \
+    ro.com.google.locationfeatures=0 \
+    ro.com.google.networklocation=0 \
+    ro.config.nocheckin=1 \
+    ro.debuggable=1 \
+    ro.error.receiver.system.apps=com.google.android.gms \
+    ro.kernel.android.checkjni=0 \
+    ro.kernel.checkjni=0 \
+    ro.logd.size.stats=0 \
+    ro.setupwizard.enterprise_mode=1 \
+    ro.sf.blurs_are_expensive=1 \
+    ro.surface_flinger.supports_background_blur=1 \
+    ro.url.legal.android_privacy=http://www.google.com/intl/%s/mobile/android/basic/privacy.html \
+    ro.url.legal=http://www.google.com/intl/%s/mobile/android/basic/phone-legal.html \
+    sys.debug.watchdog=0 \
+    sys.log.app=0 \
+    trustkernel.log.state=disable \
 
 # Create input surface on the framework side
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -959,7 +1015,7 @@ include device/google/gs201/gnss/device-gnss.mk
 endif
 BOARD_VENDOR_SEPOLICY_DIRS += device/google/gs201-sepolicy/gps
 
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit_only.mk)
 #$(call inherit-product, hardware/google_devices/exynos5/exynos5.mk)
 #$(call inherit-product-if-exists, hardware/google_devices/gs201/gs201.mk)
 #$(call inherit-product-if-exists, vendor/google_devices/common/exynos-vendor.mk)

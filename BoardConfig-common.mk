@@ -19,6 +19,23 @@ include build/make/target/board/BoardConfigPixelCommon.mk
 # Should be uncommented after fixing vndk-sp violation is fixed.
 PRODUCT_FULL_TREBLE_OVERRIDE := true
 
+# FOD animations and BLUR
+EXTRA_UDFPS_ANIMATIONS := true
+TARGET_HAS_UDFPS := true
+TARGET_FACE_UNLOCK_SUPPORTED := true
+TARGET_SUPPORTS_QUICK_TAP := true
+TARGET_USES_BLUR := true
+TARGET_ENABLE_BLUR := true
+
+# Define some properties for GMS
+$(call inherit-product-if-exists, vendor/gms/products/gms.mk)
+# Anything including updatable_apex.mk should have done so by now.
+ifeq ($(TARGET_FLATTEN_APEX), false)
+$(call inherit-product-if-exists, vendor/partner_modules/build/mainline_modules.mk)
+else
+$(call inherit-product-if-exists, vendor/partner_modules/build/mainline_modules_flatten_apex.mk)
+endif
+
 # HACK : To fix up after bring up multimedia devices.
 TARGET_SOC := gs201
 
@@ -33,10 +50,10 @@ TARGET_CPU_VARIANT := cortex-a55
 TARGET_CPU_VARIANT_RUNTIME := cortex-a55
 
 # Enable 64-bit for non-zygote.
-ZYGOTE_FORCE_64 := false
+ZYGOTE_FORCE_64 := true
 
 # Force any prefer32 targets to be compiled as 64 bit.
-FORCE_MULTILIB_FIRST_ON_DEVICE := false
+FORCE_MULTILIB_FIRST_ON_DEVICE := true
 
 # Build the 32 bit targets
 TARGET_2ND_ARCH := arm
@@ -53,7 +70,7 @@ BOARD_KERNEL_CMDLINE += cgroup_disable=memory
 BOARD_KERNEL_CMDLINE += rcupdate.rcu_expedited=1 rcu_nocbs=all
 BOARD_KERNEL_CMDLINE += stack_depot_disable=off page_pinner=on
 BOARD_KERNEL_CMDLINE += swiotlb=1024
-#BOARD_KERNEL_CMDLINE += disable_dma32=on
+BOARD_KERNEL_CMDLINE += disable_dma32=on
 BOARD_BOOTCONFIG += androidboot.boot_devices=14700000.ufs
 
 TARGET_NO_BOOTLOADER := true
@@ -171,23 +188,16 @@ PRODUCT_FS_COMPRESSION := 1
 BOARD_FLASH_BLOCK_SIZE := 4096
 BOARD_MOUNT_SDCARD_RW := true
 
-# system.img
-BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := erofs
-
 # product.img
-BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_COPY_OUT_PRODUCT := product
 
 # system_ext.img
-BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_COPY_OUT_SYSTEM_EXT := system_ext
 
 # persist.img
 BOARD_PERSISTIMAGE_FILE_SYSTEM_TYPE := ext4
-
-# erofs compressor
-BOARD_EROFS_COMPRESSOR := lz4
-BOARD_EROFS_PCLUSTER_SIZE := 262144
 
 ########################
 # Video Codec
@@ -219,7 +229,7 @@ BOARD_SUPER_PARTITION_ERROR_LIMIT := 8006926336
 
 # Build a separate system_dlkm partition
 BOARD_USES_SYSTEM_DLKMIMAGE := true
-BOARD_SYSTEM_DLKMIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_SYSTEM_DLKMIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_COPY_OUT_SYSTEM_DLKM := system_dlkm
 
 # Testing related defines
